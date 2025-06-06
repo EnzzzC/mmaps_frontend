@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
 import * as THREE from 'three';
+// import './App.css'; // Décommente si tu utilises un fichier CSS classique
 
 function App() {
   const globeRef = useRef();
+
   const [markers, setMarkers] = useState(() => {
     const stored = localStorage.getItem('markers');
     return stored ? JSON.parse(stored) : [];
@@ -43,6 +45,7 @@ function App() {
     reader.readAsDataURL(file);
   };
 
+  // Custom 3D marker object
   const pinObject = new THREE.Group();
   const material = new THREE.MeshLambertMaterial({ color: 'red' });
   const cone = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.4, 8), material);
@@ -73,7 +76,10 @@ function App() {
       />
       {newMarkerCoords && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
-          <form onSubmit={handleSubmit} className="bg-base-100 p-4 rounded shadow space-y-2 w-80">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-base-100 p-4 rounded shadow space-y-2 w-80"
+          >
             <h3 className="text-lg font-bold">Ajouter un point</h3>
             <label className="form-control">
               <span className="label-text">Titre</span>
@@ -81,7 +87,9 @@ function App() {
                 required
                 className="input input-bordered"
                 value={form.title}
-                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
               />
             </label>
             <label className="form-control">
@@ -97,11 +105,22 @@ function App() {
             </label>
             <label className="form-control">
               <span className="label-text">Image</span>
-              <input type="file" accept="image/*" onChange={handleImageChange} className="file-input file-input-bordered" />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="file-input file-input-bordered"
+              />
             </label>
             <div className="flex justify-end gap-2 mt-2">
-              <button type="submit" className="btn btn-primary">Ajouter</button>
-              <button type="button" className="btn" onClick={() => setNewMarkerCoords(null)}>
+              <button type="submit" className="btn btn-primary">
+                Ajouter
+              </button>
+              <button
+                type="button"
+                className="btn"
+                onClick={() => setNewMarkerCoords(null)}
+              >
                 Annuler
               </button>
             </div>
