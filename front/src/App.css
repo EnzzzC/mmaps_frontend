@@ -1,0 +1,39 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-overlay form {
+  background: #fff;
+  padding: 1em;
+  border-radius: 4px;
+  color: #000;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.form-overlay form input,
+.form-overlay form textarea {
+  width: 100%;
+}
+
+.form-overlay button {
+  margin-top: 0.5em;
+}
