@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
-import './App.css';
+import * as THREE from 'three';
 
 function App() {
+  const globeRef = useRef();
   const [markers, setMarkers] = useState(() => {
     const stored = localStorage.getItem('markers');
     return stored ? JSON.parse(stored) : [];
@@ -42,17 +43,28 @@ function App() {
     reader.readAsDataURL(file);
   };
 
+  const pinObject = new THREE.Group();
+  const material = new THREE.MeshLambertMaterial({ color: 'red' });
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.4, 8), material);
+  cone.position.y = 0.2;
+  const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.12), material);
+  pinObject.add(cone);
+  pinObject.add(sphere);
+
   return (
-    <div className="container">
+    <div className="w-screen h-screen">
       <Globe
-        globeImageUrl="https://unpkg.com/three-globe/example/img/earth-dark.jpg"
+        ref={globeRef}
+        globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        bumpImageUrl="https://unpkg.com/three-globe/example/img/earth-topology.png"
         backgroundImageUrl="https://unpkg.com/three-globe/example/img/night-sky.png"
         onGlobeClick={handleGlobeClick}
-        pointsData={markers}
-        pointLat="lat"
-        pointLng="lng"
-        pointColor={() => 'orange'}
-        pointRadius={0.3}
+        objectsData={markers}
+        objectLat="lat"
+        objectLng="lng"
+        objectAltitude={() => 0.02}
+        objectFacesSurface
+        objectThreeObject={() => pinObject.clone()}
         labelsData={markers}
         labelLat="lat"
         labelLng="lng"
@@ -60,34 +72,36 @@ function App() {
         labelSize={1}
       />
       {newMarkerCoords && (
-        <div className="form-overlay">
-          <form onSubmit={handleSubmit}>
-            <h3>Ajouter un point</h3>
-            <label>
-              Titre
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+          <form onSubmit={handleSubmit} className="bg-base-100 p-4 rounded shadow space-y-2 w-80">
+            <h3 className="text-lg font-bold">Ajouter un point</h3>
+            <label className="form-control">
+              <span className="label-text">Titre</span>
               <input
                 required
+                className="input input-bordered"
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               />
             </label>
-            <label>
-              Description
+            <label className="form-control">
+              <span className="label-text">Description</span>
               <textarea
                 rows="3"
+                className="textarea textarea-bordered"
                 value={form.description}
                 onChange={(e) =>
                   setForm((f) => ({ ...f, description: e.target.value }))
                 }
               />
             </label>
-            <label>
-              Image
-              <input type="file" accept="image/*" onChange={handleImageChange} />
+            <label className="form-control">
+              <span className="label-text">Image</span>
+              <input type="file" accept="image/*" onChange={handleImageChange} className="file-input file-input-bordered" />
             </label>
-            <div>
-              <button type="submit">Ajouter</button>
-              <button type="button" onClick={() => setNewMarkerCoords(null)}>
+            <div className="flex justify-end gap-2 mt-2">
+              <button type="submit" className="btn btn-primary">Ajouter</button>
+              <button type="button" className="btn" onClick={() => setNewMarkerCoords(null)}>
                 Annuler
               </button>
             </div>
